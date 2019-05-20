@@ -1,4 +1,4 @@
-Zendesk Backend Exercise
+Backend Exercise
 ==========================
 
 ## Problem Statement

@@ -1,3 +1,5 @@
+package solution
+
 import org.scalatest.{Matchers, WordSpec}
 
 class MainSpec extends WordSpec with Matchers {
