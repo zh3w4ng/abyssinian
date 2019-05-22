@@ -22,9 +22,6 @@ jobs:
       - checkout
       - restore_cache:
           key: sbt-cache
-      - run:
-          name: Compile abyssinian dist package
-          command: cat /dev/null | sbt clean update dist
       - store_artifacts:
           path: target/universal/abyssinian.zip
           destination: abyssinian
