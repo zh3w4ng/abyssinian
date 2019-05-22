@@ -1,6 +1,8 @@
 package solution
 
 import org.scalatest.{Matchers, WordSpec}
+import DateOps._
+import java.util.Date
 
 class TrainSpec extends WordSpec with Matchers {
   "codeName" should {
@@ -10,9 +12,10 @@ class TrainSpec extends WordSpec with Matchers {
   }
   "interchangeStationsWithTrain" should {
     "return all interchange stations between EW and CC" in {
-      val trains = RoutePlanner.instance.trains
-      val ew     = trains.filter(_.codeName == TrainCode("EW")).head
-      val cc     = trains.filter(_.codeName == TrainCode("CC")).head
+      val today: Date = "23 May 2018"
+      val trains      = RoutePlanner.instance(today).trains
+      val ew          = trains.filter(_.codeName == TrainCode("EW")).head
+      val cc          = trains.filter(_.codeName == TrainCode("CC")).head
       ew.interchangeStationsWith(cc).map(_.from.fullName) shouldEqual List(
         "Paya Lebar",
         "Buona Vista"

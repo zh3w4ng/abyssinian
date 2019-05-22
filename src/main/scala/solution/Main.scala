@@ -1,10 +1,14 @@
 package solution
+import DateTimeOps._
 
 object Main extends App {
 
   override def main(args: Array[String]): Unit = {
-    require(args.length == 2, "Program needs two parameters: \"FROM\", \"TO\".")
-    val planner       = RoutePlanner.instance
+    require(
+      args.length == 3,
+      "Program needs two parameters: \"FROM\", \"TO\", \"DATETIME\"."
+    )
+    val planner       = RoutePlanner.instance(args(2))
     val trains        = planner.trains
     val routes        = planner.allRoutesFor(args(0), args(1))
     val shortestRoute = routes.head

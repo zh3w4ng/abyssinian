@@ -1,8 +1,11 @@
 package solution
 import org.scalatest.{Matchers, WordSpec}
+import DateOps._
+import java.util.Date
 
 class RoutePlannerSpec extends WordSpec with Matchers {
-  val planner = RoutePlanner.instance
+  val today: Date = "23 May 2018"
+  val planner     = RoutePlanner.instance(today)
   def stationByName(name: String, code: String): Station = {
     planner.allStations(name).filter(_.code == TrainCode(code)).head
   }
@@ -25,12 +28,12 @@ class RoutePlannerSpec extends WordSpec with Matchers {
   }
 
   "allStations" should {
-    "have 136 distinct stations" in {
-      planner.allStations.size shouldEqual 136
+    "have 119 distinct stations" in {
+      planner.allStations.size shouldEqual 119
     }
-    "have 166 stations including interchanges for different lines" in {
+    "have 143 stations including interchanges for different lines" in {
       planner.allStations.values
-        .foldLeft(0)((acc, x: List[Station]) => acc + x.size) shouldEqual 166
+        .foldLeft(0)((acc, x: List[Station]) => acc + x.size) shouldEqual 143
     }
   }
 

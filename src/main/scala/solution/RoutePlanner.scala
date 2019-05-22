@@ -2,13 +2,16 @@ package solution
 
 import misc.IO._
 import scala.math
+import java.text.SimpleDateFormat
+import java.util.Date
 import TrainCodeOps._
+import DateOps._
 
 object RoutePlanner {
-  val instance = new RoutePlanner()
+  def instance(time: Date) = new RoutePlanner(time)
 }
 
-class RoutePlanner() {
+class RoutePlanner(time: Date) {
   val trains: Set[Train] = {
     // group by 2-character code (e.g. EW) and construct station and train objects from there
     val trainMapRaw: Map[String, List[Array[String]]] =
@@ -24,10 +27,10 @@ class RoutePlanner() {
         Train(k, v)
     }.toSet
   }
-  val allStations: Map[String, List[Station]] = {
+  def allStations: Map[String, List[Station]] = {
     val stationList =
       trains.foldLeft(List[Station]())((acc, x) => acc ::: x.stations)
-    stationList.groupBy(_.fullName)
+    stationList.filter(_.fromDate.compareTo(time) <= 0).groupBy(_.fullName)
   }
 
   def allRoutesFor(from: String, to: String): List[Route] = {
@@ -85,4 +88,17 @@ case class Route(hops: List[Hop], successful: Boolean) extends Ordered[Route] {
 
   override def compare(that: Route): Int =
     (this.distance - that.distance)
+}
+
+object DateTimeOps {
+  implicit def stringToDate(s: String): Date = {
+    val format = new java.text.SimpleDateFormat("YYYY-MM-DD hh:mm")
+    format.parse(s)
+  }
+}
+object DateOps {
+  implicit def stringToDate(s: String): Date = {
+    val format = new java.text.SimpleDateFormat("dd MMMMM yyyy")
+    format.parse(s)
+  }
 }

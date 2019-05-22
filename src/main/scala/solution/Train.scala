@@ -1,4 +1,5 @@
 package solution
+import java.util.Date
 
 case class Train(codeName: TrainCode, stations: List[Station]) {
   def interchangeStationsWith(thatTrain: Train): List[Hop] = {
@@ -15,7 +16,7 @@ case class Station(
     code: TrainCode,
     number: Int,
     fullName: String,
-    fromDate: String
+    fromDate: Date
 ) {
   def ->(to: Station): Hop = Hop(this, to)
 }
