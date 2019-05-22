@@ -1,10 +1,13 @@
 package solution
 
 case class Train(codeName: TrainCode, stations: List[Station]) {
-  def interchangeStationsWith(tht: Train): List[Station] = {
-    stations.filter { ths =>
-      tht.stations.exists(_.fullName == ths.fullName)
-    }
+  def interchangeStationsWith(thatTrain: Train): List[Hop] = {
+    require(thatTrain.codeName != codeName, s"that train can't be the same")
+    for {
+      thisStation <- stations
+      thatStation <- thatTrain.stations
+      if thisStation.fullName == thatStation.fullName
+    } yield Hop(thisStation, thatStation)
   }
 }
 
@@ -14,7 +17,11 @@ case class Station(
     fullName: String,
     fromDate: String
 )
-case class Hop(from: Station, to: Station)
+case class Hop(from: Station, to: Station) {
+  override def toString: String = {
+    s"${from.code.v}${from.number}(${from.fullName}) -> ${to.code.v}${to.number}(${to.fullName})"
+  }
+}
 
 case class TrainCode(v: String) extends AnyVal
 

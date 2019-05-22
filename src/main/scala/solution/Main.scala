@@ -2,18 +2,18 @@ package solution
 
 object Main extends App {
 
-  val planner = RoutePlanner.instance
-  val trains  = planner.trains
-  // for {
-  //   train   <- trains
-  //   station <- train.stations
-  // } println(s"${train.codeName}, ${station.fullName}")
-  val routesList = planner.allRoutesFor("Pasir Ris", "City Hall")
-  for {
-    routes <- routesList
-    route  <- routes
-    hop    <- route
-  } println(s"${hop}")
+  override def main(args: Array[String]): Unit = {
+    require(args.length == 2, "Program needs two parameters: \"FROM\", \"TO\".")
+    val planner       = RoutePlanner.instance
+    val trains        = planner.trains
+    val routes        = planner.allRoutesFor(args(0), args(1))
+    val shortestRoute = routes.head
+    println(s"Found ${routes.size} route(s).")
+    println(s"Shortest distance is ${shortestRoute.distance}")
+    for {
+      hop <- shortestRoute.hops.reverse
+    } println(hop)
 
+  }
   def msg = "hello"
 }

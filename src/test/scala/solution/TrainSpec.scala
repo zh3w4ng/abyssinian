@@ -13,7 +13,11 @@ class TrainSpec extends WordSpec with Matchers {
       val trains = RoutePlanner.instance.trains
       val ew     = trains.filter(_.codeName == TrainCode("EW")).head
       val cc     = trains.filter(_.codeName == TrainCode("CC")).head
-      ew.interchangeStationsWith(cc).map(_.fullName) shouldEqual List(
+      ew.interchangeStationsWith(cc).map(_.from.fullName) shouldEqual List(
+        "Paya Lebar",
+        "Buona Vista"
+      )
+      ew.interchangeStationsWith(cc).map(_.to.fullName) shouldEqual List(
         "Paya Lebar",
         "Buona Vista"
       )

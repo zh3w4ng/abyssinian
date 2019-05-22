@@ -32,4 +32,22 @@ class RoutePlannerSpec extends WordSpec with Matchers {
     }
   }
 
+  "allRoutesFor" should {
+    "find a direct route between Pasir Ris and City Hall" in {
+      val route = planner
+        .allRoutesFor("Pasir Ris", "City Hall")
+        .head
+
+      route.distance shouldEqual 12
+      route.hops.size shouldEqual 1
+    }
+
+    "find a one-transfer route between Holland Village to Bugis" in {
+      val route = planner
+        .allRoutesFor("Holland Village", "Bugis")
+        .head
+      route.distance shouldEqual 8
+      route.hops.size shouldEqual 3
+    }
+  }
 }

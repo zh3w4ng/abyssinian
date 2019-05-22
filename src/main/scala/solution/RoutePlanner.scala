@@ -1,6 +1,7 @@
 package solution
 
 import misc.IO._
+import scala.math
 import TrainCodeOps._
 
 object RoutePlanner {
@@ -29,25 +30,59 @@ class RoutePlanner() {
     stationList.groupBy(_.fullName)
   }
 
-  def allRoutesFor(from: String, to: String): List[List[List[Hop]]] = {
+  def allRoutesFor(from: String, to: String): List[Route] = {
     require(allStations.contains(from), s"no source station: $from")
     require(allStations.contains(to), s"no destination station: $to")
 
     def allSubRoutesFor(
-        from: Station,
+        current: Station,
         to: Station,
-        subRoute: List[List[Hop]]
-    ): List[List[Hop]] = {
-      if (from.code == to.code)
-        List(List(Hop(from, to)))
-      else
-        List(List())
+        incompleteRoute: Route
+    ): Set[Route] = {
+      if (current.code == to.code) // destination on the same line
+        Set(Route(Hop(current, to) :: incompleteRoute.hops, true))
+      else {
+        val thisTrain: Train = trains.filter(_.codeName == current.code).head
+        val candidateNextTrains: Set[Train] = (trains - thisTrain).filter(
+          train =>
+            incompleteRoute.hops
+              .forall(
+                hop =>
+                  hop.to.code != train.codeName && hop.from.code != train.codeName
+              )
+        )
+        val moreRoutes: Set[Route] = for {
+          nextTrain <- candidateNextTrains
+          nextHop   <- thisTrain.interchangeStationsWith(nextTrain)
+          route <- allSubRoutesFor(
+            nextHop.to,
+            to,
+            Route(
+              nextHop :: Hop(current, nextHop.from) :: incompleteRoute.hops,
+              false
+            )
+          )
+        } yield route
+        moreRoutes
+      }
     }
 
-    for {
-      f <- allStations.getOrElse(from, List())
-      t <- allStations.getOrElse(to, List())
-    } yield allSubRoutesFor(f, t, List[List[Hop]]()).toList
+    val list = for {
+      f     <- allStations.getOrElse(from, Nil)
+      t     <- allStations.getOrElse(to, Nil)
+      route <- allSubRoutesFor(f, t, Route(Nil, false))
+    } yield route
+    list.filter(_.successful).sorted
   }
+}
 
+case class Route(hops: List[Hop], successful: Boolean) extends Ordered[Route] {
+  val distance: Int = hops
+    .filter(hop => hop.from.code == hop.to.code)
+    .foldLeft(0)((acc, x) => acc + math.abs(x.from.number - x.to.number)) + hops
+    .filter(hop => hop.from.code != hop.to.code)
+    .size
+
+  override def compare(that: Route): Int =
+    (this.distance - that.distance)
 }
