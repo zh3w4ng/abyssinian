@@ -16,7 +16,9 @@ case class Station(
     number: Int,
     fullName: String,
     fromDate: String
-)
+) {
+  def ->(to: Station): Hop = Hop(this, to)
+}
 case class Hop(from: Station, to: Station) {
   override def toString: String = {
     s"${from.code.v}${from.number}(${from.fullName}) -> ${to.code.v}${to.number}(${to.fullName})"

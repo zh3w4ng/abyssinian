@@ -3,7 +3,9 @@ import org.scalatest.{Matchers, WordSpec}
 
 class RoutePlannerSpec extends WordSpec with Matchers {
   val planner = RoutePlanner.instance
-
+  def stationByName(name: String, code: String): Station = {
+    planner.allStations(name).filter(_.code == TrainCode(code)).head
+  }
   "trains" should {
     "have 8 trains" in {
       planner.trains.map(_.codeName) shouldEqual Set(
@@ -37,9 +39,10 @@ class RoutePlannerSpec extends WordSpec with Matchers {
       val route = planner
         .allRoutesFor("Pasir Ris", "City Hall")
         .head
-
+      val pasirR = stationByName("Pasir Ris", "EW")
+      val cityH  = stationByName("City Hall", "EW")
       route.distance shouldEqual 12
-      route.hops.size shouldEqual 1
+      route.hops shouldEqual List(pasirR -> cityH)
     }
 
     "find a one-transfer route between Holland Village to Bugis" in {
@@ -47,7 +50,15 @@ class RoutePlannerSpec extends WordSpec with Matchers {
         .allRoutesFor("Holland Village", "Bugis")
         .head
       route.distance shouldEqual 8
-      route.hops.size shouldEqual 3
+      val hollandV  = stationByName("Holland Village", "CC")
+      val bugis     = stationByName("Bugis", "DT")
+      val botanicCC = stationByName("Botanic Gardens", "CC")
+      val botanicDT = stationByName("Botanic Gardens", "DT")
+      route.hops shouldEqual List(
+        botanicDT -> bugis,
+        botanicCC -> botanicDT,
+        hollandV  -> botanicCC
+      )
     }
   }
 }
