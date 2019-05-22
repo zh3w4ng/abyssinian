@@ -22,9 +22,9 @@ jobs:
       - checkout
       - restore_cache:
           key: sbt-cache
-      - test:
-          override:
-          - sbt clean update test
+      - run:
+          name: Test
+          command: sbt clean update test
       - store_artifacts:
           path: target/universal/abyssinian.zip
           destination: abyssinian
