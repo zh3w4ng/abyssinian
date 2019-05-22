@@ -1,3 +1,5 @@
+# Abyssinian
+
 ![Abyssinian](http://www.pethealthnetwork.com/sites/default/files/styles/large/public/the-abyssinian.jpg "Abyssinian Cat")
 
 The codename indicates the order of the accepted challenges. Here comes the first one.
@@ -6,10 +8,12 @@ The codename indicates the order of the accepted challenges. Here comes the firs
 
 # Installation
 
+```
 sbt 1.2.8
 scala 2.12.8
 scalatest 3.0.5
 scalafmt 2.0.0
+```
 
 # Run and Test
 
